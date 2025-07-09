@@ -1,7 +1,6 @@
-package com.marcosetm.user_management.entity;
+package com.marcosetm.user_management.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.marcosetm.user_management.model.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
