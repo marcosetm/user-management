@@ -54,10 +54,10 @@ public class Account {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING) // stores enum values as strings rather than ordinals
-    private Role role;
+    private Role role = Role.user;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private boolean isActive = true;
 
     // Lombok Getters and Setters
 
