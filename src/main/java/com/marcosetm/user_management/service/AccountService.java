@@ -17,8 +17,8 @@ public class AccountService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Account createAccount(Account accountCreateRequest) {
-        accountCreateRequest.setPassword(passwordEncoder.encode(accountCreateRequest.getPassword()));
-        return accountRepository.save(accountCreateRequest);
+    public Account createAccount(Account account) {
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        return accountRepository.save(account);
     }
 }
