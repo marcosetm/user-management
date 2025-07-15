@@ -9,10 +9,10 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.swing.text.html.Option;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/account")
@@ -32,5 +32,12 @@ public class AccountController {
         Account createdAccount = accountService.createAccount(account);
         AccountResponseDto accountResponseDto = AccountMapper.toDto(createdAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(accountResponseDto);
+    }
+    // Read Account profile
+    // todo: implement auth so only admin or logged-in user can request this information
+    @GetMapping("/{id}")
+    public ResponseEntity<AccountResponseDto> getAccountById(@PathVariable Long id) {
+        return accountService.getAccountById(id).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
