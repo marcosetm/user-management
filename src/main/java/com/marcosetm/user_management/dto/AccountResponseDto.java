@@ -1,5 +1,6 @@
 package com.marcosetm.user_management.dto;
 
+import com.marcosetm.user_management.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,5 @@ public class AccountResponseDto {
     private String lastName;
     private LocalDate birthDate;
     private String email;
+    private Role role;
 }

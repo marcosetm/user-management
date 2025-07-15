@@ -22,7 +22,8 @@ public class AccountMapper {
                 account.getFirstName(),
                 account.getLastName(),
                 account.getDateOfBirth(),
-                account.getEmail()
+                account.getEmail(),
+                account.getRole()
         );
     }
 }
