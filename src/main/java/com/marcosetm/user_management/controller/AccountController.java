@@ -1,17 +1,19 @@
 package com.marcosetm.user_management.controller;
 
 import com.marcosetm.user_management.dto.AccountCreateDto;
+import com.marcosetm.user_management.dto.AccountLoginRequestDto;
 import com.marcosetm.user_management.dto.AccountResponseDto;
 import com.marcosetm.user_management.mapper.AccountMapper;
 import com.marcosetm.user_management.model.Account;
 import com.marcosetm.user_management.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -39,5 +41,22 @@ public class AccountController {
     public ResponseEntity<AccountResponseDto> getAccountById(@PathVariable Long id) {
         return accountService.getAccountById(id).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+    // Login
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AccountLoginRequestDto accountLoginReq) {
+        Optional<Account> accountOptional = accountService.getAccountByEmail(accountLoginReq.getEmail());
+
+        if (accountOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Account account = accountOptional.get();
+        boolean isAuthenticated = accountService.authenticate(accountLoginReq.getPassword(), account.getPassword());
+
+        if (!isAuthenticated) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(AccountMapper.toDto(account));
     }
 }

@@ -1,5 +1,6 @@
 package com.marcosetm.user_management.service;
 
+import com.marcosetm.user_management.dto.AccountLoginRequestDto;
 import com.marcosetm.user_management.dto.AccountResponseDto;
 import com.marcosetm.user_management.mapper.AccountMapper;
 import com.marcosetm.user_management.model.Account;
@@ -28,5 +29,11 @@ public class AccountService {
     public Optional<AccountResponseDto> getAccountById(Long id) {
         return accountRepository.findById(id)
                 .map(AccountMapper::toDto);
+    }
+    public Optional<Account> getAccountByEmail(String email) {
+        return accountRepository.findAccountByEmail(email);
+    }
+    public boolean authenticate(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
