@@ -3,6 +3,7 @@ package com.marcosetm.user_management.controller;
 import com.marcosetm.user_management.dto.AccountCreateDto;
 import com.marcosetm.user_management.dto.AccountLoginRequestDto;
 import com.marcosetm.user_management.dto.AccountResponseDto;
+import com.marcosetm.user_management.dto.AccountUpdateDto;
 import com.marcosetm.user_management.mapper.AccountMapper;
 import com.marcosetm.user_management.model.Account;
 import com.marcosetm.user_management.service.AccountService;
@@ -44,7 +45,7 @@ public class AccountController {
     }
     // Login
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AccountLoginRequestDto accountLoginReq) {
+    public ResponseEntity<?> login(@Valid @RequestBody AccountLoginRequestDto accountLoginReq) {
         Optional<Account> accountOptional = accountService.getAccountByEmail(accountLoginReq.getEmail());
 
         if (accountOptional.isEmpty()) {
@@ -58,5 +59,18 @@ public class AccountController {
         }
 
         return ResponseEntity.ok(AccountMapper.toDto(account));
+    }
+    // Update
+    @PatchMapping("/{id}")
+    public ResponseEntity<AccountResponseDto> updateAccount(@PathVariable Long id,
+                                                            @Valid @RequestBody AccountUpdateDto accountUpdateReq) {
+        boolean isUpdated = accountService.updateAccount(id, accountUpdateReq);
+        if (!isUpdated) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return accountService.getAccountById(id)
+                .map(updatedDto -> ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedDto))
+                .orElse(ResponseEntity.notFound().build());
+
     }
 }
