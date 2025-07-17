@@ -34,12 +34,33 @@ public class AccountController {
         AccountResponseDto accountResponseDto = AccountMapper.toDto(createdAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(accountResponseDto);
     }
-    // Read Account profile
+    // Read Account
     // todo: implement auth so only admin or logged-in user can request this information
     @GetMapping("/{id}")
     public ResponseEntity<AccountResponseDto> getAccountById(@PathVariable Long id) {
         return accountService.getAccountById(id).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+    // Update Account
+    @PatchMapping("/{id}")
+    public ResponseEntity<AccountResponseDto> updateAccount(@PathVariable Long id,
+                                                            @Valid @RequestBody AccountUpdateDto accountUpdateReq) {
+        boolean isUpdated = accountService.updateAccount(id, accountUpdateReq);
+        if (!isUpdated) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return accountService.getAccountById(id)
+                .map(updatedDto -> ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedDto))
+                .orElse(ResponseEntity.notFound().build());
+    }
+    // Delete Account
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAccountById(@PathVariable Long id) {
+        boolean isDeleted = accountService.deleteAccountById(id);
+        if (!isDeleted) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.noContent().build();
     }
     // Login
     @PostMapping("/login")
@@ -57,18 +78,5 @@ public class AccountController {
         }
 
         return ResponseEntity.ok(AccountMapper.toDto(account));
-    }
-    // Update
-    @PatchMapping("/{id}")
-    public ResponseEntity<AccountResponseDto> updateAccount(@PathVariable Long id,
-                                                            @Valid @RequestBody AccountUpdateDto accountUpdateReq) {
-        boolean isUpdated = accountService.updateAccount(id, accountUpdateReq);
-        if (!isUpdated) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return accountService.getAccountById(id)
-                .map(updatedDto -> ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedDto))
-                .orElse(ResponseEntity.notFound().build());
-
     }
 }

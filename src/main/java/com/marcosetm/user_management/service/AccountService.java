@@ -26,21 +26,17 @@ public class AccountService {
         this.passwordEncoder = passwordEncoder;
         this.accountUpdateMapper = accountUpdateMapper;
     }
-
+    // Create
     public Account createAccount(Account account) {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         return accountRepository.save(account);
     }
+    // Read
     public Optional<AccountResponseDto> getAccountById(Long id) {
         return accountRepository.findById(id)
                 .map(AccountMapper::toDto);
     }
-    public Optional<Account> getAccountByEmail(String email) {
-        return accountRepository.findAccountByEmail(email);
-    }
-    public boolean authenticate(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
-    }
+    // Update
     public boolean updateAccount(Long id, AccountUpdateDto accountUpdateReq) {
         Optional<Account> account = accountRepository.findById(id);
         if (account.isPresent()) {
@@ -57,5 +53,21 @@ public class AccountService {
             return true;
         }
         return false;
+    }
+    // Delete
+    public boolean deleteAccountById(Long id) {
+        if (!accountRepository.existsById(id)) {
+            return false;
+        }
+
+        accountRepository.deleteById(id);
+        return true;
+    }
+    // Login
+    public Optional<Account> getAccountByEmail(String email) {
+        return accountRepository.findAccountByEmail(email);
+    }
+    public boolean authenticate(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
