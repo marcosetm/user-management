@@ -54,7 +54,6 @@ public class AccountService {
             }
 
             accountRepository.save(account.get());
-
             return true;
         }
         return false;
