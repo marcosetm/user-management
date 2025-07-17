@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AccountLoginRequestDto {
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email is required")
+    @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Must be a valid email")
     private String email;
     @NotBlank
     private String password;
