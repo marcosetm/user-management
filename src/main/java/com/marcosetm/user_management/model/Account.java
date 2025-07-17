@@ -2,6 +2,7 @@ package com.marcosetm.user_management.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,6 +35,7 @@ public class Account {
     private LocalDate dateOfBirth;
 
     @Column(nullable = false, unique = true)
+    @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Must be a valid email")
     private String email;
 
     @Column(nullable = false)

@@ -18,16 +18,16 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountCreateDto {
-    @NotBlank
+    @NotBlank(message = "First name is required")
     private String firstName;
-    @NotBlank
+    @NotBlank(message = "Last name is required")
     private String lastName;
-    @NotNull
+    @NotNull(message = "Date of birth is required")
     private LocalDate dateOfBirth;
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email is required")
+    @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Must be a valid email")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Password is required")
     @Size(min = 8, max = 20)
     private String password;
     private Role role = Role.user;
