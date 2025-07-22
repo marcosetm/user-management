@@ -28,7 +28,7 @@ public class AccountCreateDto {
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Must be a valid email")
     private String email;
     @NotBlank(message = "Password is required")
-    @Size(min = 8, max = 20)
+    @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters.")
     private String password;
     private Role role = Role.user;
 }
