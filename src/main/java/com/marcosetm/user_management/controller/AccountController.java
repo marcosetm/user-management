@@ -30,6 +30,7 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<AccountResponseDto> createAccount(@Valid @RequestBody AccountCreateDto accountCreateReq) {
         @Valid Account account = AccountMapper.toEntity(accountCreateReq);
+        account.setEmail(accountCreateReq.getEmail().toLowerCase().strip());
         Account createdAccount = accountService.createAccount(account);
         AccountResponseDto accountResponseDto = AccountMapper.toDto(createdAccount);
         return ResponseEntity.status(HttpStatus.CREATED).body(accountResponseDto);
@@ -65,16 +66,19 @@ public class AccountController {
     // Login
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AccountLoginRequestDto accountLoginReq) {
+        accountLoginReq.setEmail(accountLoginReq.getEmail().trim().toLowerCase());
         Optional<Account> accountOptional = accountService.getAccountByEmail(accountLoginReq.getEmail());
 
         if (accountOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No account found for email: " + accountLoginReq.getEmail());
         }
         Account account = accountOptional.get();
         boolean isAuthenticated = accountService.authenticate(accountLoginReq.getPassword(), account.getPassword());
 
         if (!isAuthenticated) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid credentials");
         }
 
         return ResponseEntity.ok(AccountMapper.toDto(account));
